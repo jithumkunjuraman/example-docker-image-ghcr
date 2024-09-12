@@ -40,10 +40,10 @@ jobs:
 
       # Add semantic-release step
       - name: Semantic Release
-        uses: docker://node:21.3.0-alpine # Use a Docker container for consistent environment
+        uses: node:21.3.0-alpine # Use a Docker container for consistent environment
         id: semantic_release # Add an ID to access its outputs later
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_READ_TOKEN }} # Make sure you have this secret with appropriate permissions
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Make sure you have this secret with appropriate permissions
           GIT_COMMITTER_NAME: your-bot-name # Customize as needed
           GIT_COMMITTER_EMAIL: your-bot-email@example.com # Customize as needed
           GIT_AUTHOR_NAME: your-bot-name # Customize as needed
@@ -51,10 +51,7 @@ jobs:
         with:
           args: |
             apk add git
-            npm install -g semantic-release@latest
-            npx semantic-release@latest \
-                --extends conventional-changelog-conventionalcommits \
-                --no-ci
+            npx semantic-release@latest
 
       - name: Build and push Docker image
         id: push
