@@ -1,0 +1,52 @@
+name: Build And Deploy
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      attestations: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: semantic
+        uses: cycjimmy/semantic-release-action@v3
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_COMMITTER_NAME: abc-bot
+          GIT_COMMITTER_EMAIL: bot.cicd.ext@abc.com
+          GIT_AUTHOR_NAME: abc-bot
+          GIT_AUTHOR_EMAIL: bot.cicd.ext@abc.com
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: test-ci:v1.1.0
