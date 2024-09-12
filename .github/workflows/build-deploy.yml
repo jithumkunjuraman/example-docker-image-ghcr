@@ -34,12 +34,11 @@ jobs:
           GIT_AUTHOR_NAME: abc-bot
           GIT_AUTHOR_EMAIL: bot.cicd.ext@abc.com
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+      # Grant the necessary permissions to the GITHUB_TOKEN for pushing to GHCR
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          install: true
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -47,4 +46,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: test-ci:v1.1.0
+          tags: ghcr.io/${{ github.repository_owner }}/test-ci:v1.1.0
