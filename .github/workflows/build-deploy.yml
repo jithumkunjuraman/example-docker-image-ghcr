@@ -50,7 +50,8 @@ jobs:
           GIT_AUTHOR_EMAIL: your-bot-email@helloworld.com # Customize as needed
         with:
           args: |
-            apk add git
+            apk add --no-cache git 
+            npm install -g semantic-release@latest
             npx semantic-release@latest
 
       - name: Build and push Docker image
