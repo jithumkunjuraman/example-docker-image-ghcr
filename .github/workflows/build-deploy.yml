@@ -40,14 +40,14 @@ jobs:
 
       # Add semantic-release step
       - name: Semantic Release
-        uses: node:21.3.0-alpine # Use a Docker container for consistent environment
-        id: semantic_release # Add an ID to access its outputs later
+        uses: docker://node:21.3.0-alpine
+        id: semantic_release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Make sure you have this secret with appropriate permissions
-          GIT_COMMITTER_NAME: your-bot-name # Customize as needed
-          GIT_COMMITTER_EMAIL: your-bot-email@example.com # Customize as needed
-          GIT_AUTHOR_NAME: your-bot-name # Customize as needed
-          GIT_AUTHOR_EMAIL: your-bot-email@example.com # Customize as needed
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_COMMITTER_NAME: shakthiman
+          GIT_COMMITTER_EMAIL: your-bot-email@helloworld.com #
+          GIT_AUTHOR_NAME: your-git-bot
+          GIT_AUTHOR_EMAIL: your-bot-email@helloworld.com # Customize as needed
         with:
           args: |
             apk add git
