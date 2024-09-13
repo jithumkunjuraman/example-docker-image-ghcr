@@ -41,11 +41,12 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       # Add semantic-release step
-      - name: Create new release
-        uses: cycjimmy/semantic-release-action@v4
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v3
         id: semantic
         with:
           extra_plugins: |
+            @semantic-release/changelog
             @semantic-release/git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
