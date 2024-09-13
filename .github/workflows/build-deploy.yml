@@ -49,10 +49,9 @@ jobs:
           GIT_AUTHOR_NAME: deliveryhero-bot
           GIT_AUTHOR_EMAIL: bot.cicd.ext@deliveryhero.com
         with:
-          entrypoint: /bin/sh -c
           args: |
             apk add --no-cache git 
-            && npm install -g semantic-release@latest \
+            && npm install -g semantic-release@latest
             && npx semantic-release@latest \
                 --extends conventional-changelog-conventionalcommits \
                 --no-ci
