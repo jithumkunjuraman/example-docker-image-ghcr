@@ -46,15 +46,15 @@ jobs:
         uses: docker://node:21.3.0-alpine
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GIT_COMMITTER_NAME: deliveryhero-bot
-          GIT_COMMITTER_EMAIL: bot.cicd.ext@deliveryhero.com
-          GIT_AUTHOR_NAME: deliveryhero-bot
-          GIT_AUTHOR_EMAIL: bot.cicd.ext@deliveryhero.com
+          GIT_COMMITTER_NAME: abc-bot
+          GIT_COMMITTER_EMAIL: bot.cicd.ext@abc.com
+          GIT_AUTHOR_NAME: abc-bot
+          GIT_AUTHOR_EMAIL: bot.cicd.ext@abc.com
           GITHUB_SERVER_URL: ${{ github.server_url }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         with:
           entrypoint: /bin/sh
-          args: -c "apk add --no-cache git && npm install -g semantic-release@latest && npx semantic-release@latest"
+          args: -c "apk add --no-cache git && git clone $GITHUB_SERVER_URL/${GITHUB_REPOSITORY}.git /workspace && cd /workspace && git config --global user.name 'abc-bot' && git config --global user.email 'bot.cicd.ext@abc.com' && npm install -g semantic-release@latest && npx semantic-release@latest"
 
       - name: Build and push Docker image
         if: steps.semantic.outputs.new_release_published == 'true'
