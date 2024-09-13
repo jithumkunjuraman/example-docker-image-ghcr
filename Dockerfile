@@ -1,5 +1,5 @@
 FROM python:3.9-slim-buster
-# Test Semantic
+# Test Semantic Realease
 WORKDIR /app
 
 COPY . .
