@@ -50,7 +50,7 @@ jobs:
           GIT_AUTHOR_EMAIL: bot.cicd.ext@deliveryhero.com
         with:
           entrypoint: /bin/sh
-          args: -c "apk add --no-cache git && npm install -g semantic-release@latest && npx semantic-release@latest --extends conventional-changelog-conventionalcommits --no-ci"
+          args: -c "apk add --no-cache git && npm install -g semantic-release@latest && npx semantic-release@latest"
 
       - name: Build and push Docker image
         if: steps.semantic.outputs.new_release_published == 'true'
