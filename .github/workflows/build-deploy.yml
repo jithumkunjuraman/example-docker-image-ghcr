@@ -50,9 +50,9 @@ jobs:
           GIT_AUTHOR_EMAIL: bot.cicd.ext@deliveryhero.com
         with:
           args: |
-            apk add --no-cache git 
-            && npm install -g semantic-release@latest
-            && npx semantic-release@latest \
+            apk add --no-cache git; \
+            npm install -g semantic-release@latest; \
+            npx semantic-release@latest \
                 --extends conventional-changelog-conventionalcommits \
                 --no-ci
 
