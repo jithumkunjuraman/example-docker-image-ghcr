@@ -40,14 +40,22 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      # Add semantic-release step
+      # Create a semantic-release configuration file dynamically
+      - name: Create semantic-release config
+        run: |
+          echo '{
+            "branches": ["master"],
+            "plugins": [
+              "@semantic-release/commit-analyzer",
+              "@semantic-release/release-notes-generator",
+              "@semantic-release/changelog",
+              "@semantic-release/git"
+            ]
+          }' > .releaserc.json
+
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v3
         id: semantic
-        with:
-          extra_plugins: |
-            @semantic-release/changelog
-            @semantic-release/git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
