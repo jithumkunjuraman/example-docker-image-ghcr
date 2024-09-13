@@ -42,7 +42,7 @@ jobs:
 
       # Add semantic-release step
       - name: Create new release
-        uses: cycjimmy/semantic-release-action@v2
+        uses: cycjimmy/semantic-release-action@v4
         id: semantic
         with:
           extra_plugins: |
