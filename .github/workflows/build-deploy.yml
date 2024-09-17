@@ -1,28 +1,23 @@
 name: Create and publish a Docker image
 
-# Configures this workflow to run every time a change is pushed to the branch called `release`.
 on:
   push:
     branches: ["master"]
   pull_request:
     branches: ["master"]
 
-# Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
-# There is a single job in this workflow. It's configured to run on the latest available version of Ubuntu.
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
     permissions:
       contents: write
       packages: write
-      attestations: write
-      id-token: write
-      #
+      git: write # Added git write permission
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -40,7 +35,6 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      # Create a semantic-release configuration file dynamically
       - name: Create semantic-release config
         run: |
           echo '{
@@ -66,11 +60,9 @@ jobs:
         with:
           context: .
           push: true
-          # Use the version from semantic-release as the tag
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.semantic.outputs.new_release_version }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see "[AUTOTITLE](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds)."
       - name: Generate Artifact Attestation
         if: steps.semantic.outputs.new_release_published == 'true'
         uses: actions/attest-build-provenance@v1
@@ -78,3 +70,25 @@ jobs:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
+
+      # Create a new branch and push changes to it
+      - name: Create a new branch
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          git checkout -b release-${{ steps.semantic.outputs.new_release_version }}
+          git add .
+          git commit -m "Release version ${{ steps.semantic.outputs.new_release_version }}"
+          git push origin release-${{ steps.semantic.outputs.new_release_version }}
+
+      # Open pull request
+      - name: Create a pull request
+        if: steps.semantic.outputs.new_release_published == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: release-${{ steps.semantic.outputs.new_release_version }}
+          base: master
+          title: "Release version ${{ steps.semantic.outputs.new_release_version }}"
+          body: "Release version ${{ steps.semantic.outputs.new_release_version }}"
