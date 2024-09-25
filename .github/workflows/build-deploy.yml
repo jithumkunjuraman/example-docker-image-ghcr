@@ -35,7 +35,7 @@ jobs:
       - name: Install dependencies
         run: npm install @semantic-release/exec --save-dev
 
-      # Create a semantic-release configuration file dynamically
+      # Create a semantic-release configuration file dynamically and not pushing change log to master
       - name: Create semantic-release config
         run: |
           echo '{
