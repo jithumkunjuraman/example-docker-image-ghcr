@@ -32,30 +32,11 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      # Create a semantic-release configuration file dynamically
       - name: Create semantic-release config
         run: |
           echo '{
-            "branches": ["master"],
-            "plugins": [
-              "@semantic-release/commit-analyzer",
-              "@semantic-release/release-notes-generator",
-              ["@semantic-release/changelog", {
-                "changelogFile": "CHANGELOG.md"
-              }],
-              ["@semantic-release/git", {
-                "assets": ["CHANGELOG.md", "package.json", "package-lock.json"],
-                "message": "chore(release): ${nextRelease.version} [skip ci]"
-              }]
-            ],
-            "prepare": [
-              "@semantic-release/changelog",
-              "@semantic-release/git"
-            ],
-            "publish": [
-              ["@semantic-release/github", {
-                "assets": ["dist/**/*.{js,css}", "*.tgz"]
-              }]
-            ]
+            "branches": ["main"],
           }' > .releaserc.json
 
       - name: Semantic Release
