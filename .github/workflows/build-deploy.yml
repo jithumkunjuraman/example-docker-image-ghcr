@@ -36,7 +36,7 @@ jobs:
       - name: Create semantic-release config
         run: |
           echo '{
-            "branches": ["master"],
+            "branches": ["master"]
           }' > .releaserc.json
 
       - name: Semantic Release
