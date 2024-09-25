@@ -76,25 +76,3 @@ jobs:
           subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
-
-      # Create a new branch and push changes to it
-      - name: Create a new branch
-        if: steps.semantic.outputs.new_release_published == 'true'
-        run: |
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git checkout -b release-${{ steps.semantic.outputs.new_release_version }}
-          git add .
-          git commit -m "Release version ${{ steps.semantic.outputs.new_release_version }}"
-          git push origin release-${{ steps.semantic.outputs.new_release_version }}
-
-      # Open pull request
-      - name: Create a pull request
-        if: steps.semantic.outputs.new_release_published == 'true'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release-${{ steps.semantic.outputs.new_release_version }}
-          base: master
-          title: "Release version ${{ steps.semantic.outputs.new_release_version }}"
-          body: "Release version ${{ steps.semantic.outputs.new_release_version }}"
