@@ -32,11 +32,25 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+      - name: Install dependencies
+        run: npm install @semantic-release/exec --save-dev
+
       # Create a semantic-release configuration file dynamically
       - name: Create semantic-release config
         run: |
           echo '{
-            "branches": ["master"]
+            "branches": ["master"],
+            "plugins": [
+              "@semantic-release/commit-analyzer",
+              "@semantic-release/release-notes-generator",
+              "@semantic-release/github",
+              [
+                "@semantic-release/exec",
+                {
+                  "publishCmd": "echo ::set-output name=new_version::${nextRelease.version}"
+                }
+              ]
+            ]
           }' > .releaserc.json
 
       - name: Semantic Release
