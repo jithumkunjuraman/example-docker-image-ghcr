@@ -36,7 +36,6 @@ jobs:
       - name: Create semantic-release config
         run: |
           echo '{
-            "branches": ["master"],
             "plugins": [
               "@semantic-release/commit-analyzer",
               "@semantic-release/release-notes-generator",
